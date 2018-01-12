@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+	<a href="/stores/newstore">Add Store</a>
+	{{#info}}
+	<div>
+		<li><a href="stores/{{id}}">{{storename}}</a>
+			<form action="/stores/{{id}}?_method=DELETE" method="POST">
+				<button>Delete</button>
+			</form>
+		</li>
+	</div>
+	{{/info}}
+
+</body>
+</html>
