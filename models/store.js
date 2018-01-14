@@ -7,12 +7,14 @@ module.exports = (sequelize, DataTypes) => {
     city: DataTypes.STRING,
     state: DataTypes.STRING,
     zip: DataTypes.INTEGER
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-      }
-    }
-  });
+  }, {});
+
+  store.associate = (models) => {
+    store.hasMany(models.product, {
+      as : 'product',
+      foreignKey : 'storeid'
+    })
+  }
+
   return store;
 };
