@@ -5,16 +5,17 @@
 </head>
 <body>
 
-	<a href="/stores/newstore">Add Store</a>
-	{{#info}}
+	<a href="/website/stores/addstore">Add Store</a>
+	<br><br>
+	{{#store}}
 	<div>
-		<li><a href="stores/{{id}}">{{storename}}</a>
-			<form action="/stores/{{id}}?_method=DELETE" method="POST">
+		<li><a href="/website/stores/{{id}}">{{storename}}</a>
+			<form action="/website/stores/{{id}}?_method=DELETE" method="POST">
 				<button>Delete</button>
 			</form>
 		</li>
 	</div>
-	{{/info}}
+	{{/store}}
 
 </body>
 </html>
