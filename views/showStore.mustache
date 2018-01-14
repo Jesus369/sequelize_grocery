@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+
+    {{#iteminfo}}
+    <ul>
+      <li>{{storename}}</li>
+    </ul>
+    <form action="/website/stores/{{id}}" method="POST">
+    <input type="text" name="name" placeholder="Product Name">
+    <input type="text" name="cost" placeholder="Cost">
+    <input type="text" name="quantity" placeholder="Quantity">
+    <button>Add Item</button>
+    </form>
+    {{#product}}
+    <ul>
+      <li>
+        {{name}}
+        <form action="/website/stores/items/{{id}}?_method=DELETE" method="POST">
+          <button>Delete</button>
+        </form>
+      </li>
+    </ul>
+    {{/product}}
+
+    {{/iteminfo}}
+
+
+  </body>
+</html>
