@@ -11,78 +11,92 @@ app.use(methodOverride('_method'))
 app.set("view engine","mustache")
 app.set('views', './views')
 
-/* FIND ALL
-models.store.findAll().then(function(task) {
-	console.log(task)
-})
-
-models.store.create({
-	storename: "Walmart",
-	addressone: "4355 Spring Branch",
-	addresstwo: "None",
-	city: "Houston",
-	state: "Texas",
-	zip: 77345
-}) .then(newStore => {
-	console.log("The store " + newStore.storename + " has been created!")
-})
-
-
-models.store.destroy({
-	where: {
-		id : 3
-	}
-}) .then(deletedStore => {
-		console.log(deletedStore + " store has been deleted")
-	})
-*/
-
 app.get('/', (req,res) => {
-	res.redirect('/stores')
+	res.redirect('/website')
 })
 
-app.get('/stores', (req,res) => {
-	models.store.findAll().then( (information) => {
-		res.render('stores', {info : information})
+// HOMEPAGE
+app.get('/website', (req,res) => {
+	res.render('home')
+})
+
+// ALL STORES PAGE
+app.get('/website/stores', (req,res) => {
+	models.store.findAll().then((store) => {
+		res.render('stores', {store : store})
 	})
 })
 
-app.get('/stores/newstore', (req,res) => {
-	res.render('newStore')
+app.get('/website/stores/addstore', (req,res) => {
+	res.render('newstore')
 })
 
-app.post('/stores', (req,res) => {
-	let storename = req.body.storename
-	let addressone = req.body.addressone
-	let addresstwo = req.body.addresstwo
-	let city = req.body.city
-	let state = req.body.state
-	let zip = req.body.zip
+// ALL ITEMS PAGE
+app.get('/website/stores/items', (req,res) => {
+	models.product.findAll().then((item) => {
+		res.render('items',{iteminfo : item})
+	})
+})
 
+// SHOW STORE PAGE
+app.get('/website/stores/:id', (req,res) => {
+	models.store.findAll(
+		{where:{
+			id:req.params.id
+		}, include : [{
+			required : false,
+			model : models.product, as : 'product'
+		}],
+		raw : false
+	})
+	.then((iteminfo) => {
+		res.render('showStore',{iteminfo:iteminfo})
+	})
+})
+
+// SHOW ITEM PAGE
+app.get('/website/stores/items/:id', (req,res) => {
+	models.product.findAll({where:{id:req.params.id}})
+	.then((iteminfo) => {
+		res.send(iteminfo)
+	})
+})
+
+app.post('/website/stores', (req,res) => {
 	models.store.create({
-		storename : storename,
-		addressone : addressone,
-		addresstwo : addresstwo,
-		city : city,
-		state : state,
-		zip : zip
-	}) .then(() => {
-		res.redirect('/stores')
-	})
-})
-
-app.get('/stores/:id', (req,res) => {
-	res.send("This is the stores id")
-})
-
-app.delete('/stores/:id', (req,res) => {
-	models.store.destroy({
-		where: {
-			id : req.params.id
-		}
+		storename : req.body.storename,
+		addressone : req.body.addressone,
+		addresstwo : req.body.addresstwo,
+		city : req.body.city,
+		state : req.body.state,
+		zip : req.body.zip
 	}).then(() => {
-		res.redirect('/stores')
+		res.redirect('/website/stores')
 	})
+})
+
+// ADD PRODUCT
+app.post('/website/stores/:id', (req,res) => {
+	models.product.create({
+		name : req.body.name,
+		cost : req.body.cost,
+		quantity : req.body.quantity,
+		storeid : req.params.id
+	}).then( () => {
+		res.redirect('/website/stores/'+req.params.id)
+	})
+})
+
+//DELETE STORE
+app.delete('/website/stores/:id?', (req,res) => {
+	models.store.destroy({where: {id : req.params.id}} )
+	.then(() => { res.redirect('/website/stores')} )
+})
+
+// DELETE PRODUCT
+app.delete('/website/stores/items/:id?', (req,res) => {
+	models.product.destroy( {where: {storeid:req.params.id}} )
+	.then( () => { res.redirect('/website/stores')} )
 })
 
 app.listen(3000, () => {
